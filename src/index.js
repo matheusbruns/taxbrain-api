@@ -9,7 +9,7 @@ const routes = require('./routes/routes');
 
 var path = require('path');
 
-const PORT = 5000; // Define a porta na qual o servidor deve escutar
+const PORT = process.env.PORT; // Define a porta na qual o servidor deve escutar
 
 app.use(express.json());
 app.use("/api", routes);
