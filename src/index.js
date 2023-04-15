@@ -12,7 +12,7 @@ var path = require('path');
 const PORT = 5000; // Define a porta na qual o servidor deve escutar
 
 app.use(express.json());
-app.use("/api/users", routes);
+app.use("/api", routes);
 
 app.use(session({ secret: 'kasdakhdjakdajhkjhaksdjhakdjhakdjhkajhsd' }));
 app.use(routes);
