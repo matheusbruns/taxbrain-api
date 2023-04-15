@@ -5,7 +5,7 @@ const userController = require('../controllers/userControler');
 
 // Rota usuários
 router.route("/users").post(userController.create);
-router.route("/login").get(userController.login);
+router.route("/login").post(userController.login);
 
 module.exports = router;
 
