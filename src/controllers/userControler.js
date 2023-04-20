@@ -1,4 +1,4 @@
-const User = require('../models/userModel');
+const UserModel = require('../models/UserModel');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
@@ -7,14 +7,14 @@ module.exports = {
 
     async create(req, res) {
         const { name, email, password } = req.body;
-        const userExists = await userModel.findOne({ email });
+        const userExists = await UserModel.findOne({ email });
 
         if (userExists) {
             res.status(400).json("Usuário já existe!");
         }
 
         try {
-            const user = await userModel.create({
+            const user = await UserModel.create({
                 name,
                 email,
                 password,
