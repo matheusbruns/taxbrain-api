@@ -35,9 +35,9 @@ module.exports = {
     },
 
     async delete(req, res) {
-        const name = req.params.name;
+        const _id = req.params._id;
         try {
-          const result = await ClientModel.deleteOne({ name });
+          const result = await ClientModel.deleteOne({ _id });
           if (result.deletedCount === 0) {
             res.status(404).send('Cliente não encontrado');
             return;
