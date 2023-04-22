@@ -12,6 +12,8 @@ var path = require('path');
 const PORT = process.env.PORT; // Define a porta na qual o servidor deve escutar
 
 app.use(express.json());
+app.use(cors());
+
 app.use("/api", routes);
 
 app.use(session({ secret: 'kasdakhdjakdajhkjhaksdjhakdjhakdjhkajhsd' }));
@@ -20,7 +22,6 @@ app.use(fileUpload({
   useTempFiles: true,
   tempFileDir: path.join(__dirname, 'temp')
 }));
-app.use(cors());
 
 app.listen(PORT, () => {
   console.log(`Servidor executando na porta ${PORT}`);
