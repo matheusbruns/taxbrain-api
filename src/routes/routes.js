@@ -11,6 +11,7 @@ router.route("/login").post(userController.login);
 // Rota clientes
 router.route("/client-new").post(clientController.create);
 router.route("/clients").get(clientController.read);
+router.route("/clients/delete/:name").delete(clientController.delete);
 
 module.exports = router;
 

@@ -32,6 +32,20 @@ module.exports = {
         } catch (error) {
             res.status(400).json(error);
         }
-    }
+    },
 
+    async delete(req, res) {
+        const name = req.params.name;
+        try {
+          const result = await ClientModel.deleteOne({ name });
+          if (result.deletedCount === 0) {
+            res.status(404).send('Cliente não encontrado');
+            return;
+          }
+          res.send('Cliente excluído com sucesso');
+        } catch (error) {
+          console.error(error);
+          res.status(500).send(error);
+        }
+      }
 }
