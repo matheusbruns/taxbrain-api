@@ -1,4 +1,4 @@
-const UserModel = require('../models/UserModel');
+const UserModel = require('../models/userModel');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
@@ -35,7 +35,7 @@ module.exports = {
             return res.status(422).json({ msg: 'A senha é obrigatória' });
         }
 
-        const user = await User.findOne({ email: email });
+        const user = await UserModel.findOne({ email: email });
 
         if (!user) {
             return res.status(404).json("Usuário não existe!");;

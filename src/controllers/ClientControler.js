@@ -37,15 +37,36 @@ module.exports = {
     async delete(req, res) {
         const _id = req.params._id;
         try {
-          const result = await ClientModel.deleteOne({ _id });
-          if (result.deletedCount === 0) {
-            res.status(404).send('Cliente não encontrado');
-            return;
-          }
-          res.send('Cliente excluído com sucesso');
+            const result = await ClientModel.deleteOne({ _id });
+            if (result.deletedCount === 0) {
+                res.status(404).send('Cliente não encontrado');
+                return;
+            }
+            res.send('Cliente excluído com sucesso');
         } catch (error) {
-          console.error(error);
-          res.status(500).send(error);
+            console.error(error);
+            res.status(500).send(error);
         }
-      }
+    },
+
+    async update(req, res) {
+        try {
+            const { id, name, email, telephone, cpf } = req.body;
+
+            const client = await ClientModel.findByIdAndUpdate(id, {
+                name: name,
+                email: email,
+                telephone: telephone,
+                cpf: cpf
+            });
+
+            if (!client) {
+                return res.status(404).send('Client not found');
+            }
+            res.send('success updated');
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error);
+        }
+    }
 }
