@@ -34,20 +34,20 @@ module.exports = {
         }
     },
 
-    async delete(req, res) {
-        const _id = req.params._id;
+      async delete(req, res) {
+        const { ids } = req.body;
         try {
-            const result = await ClientModel.deleteOne({ _id });
-            if (result.deletedCount === 0) {
-                res.status(404).send('Cliente não encontrado');
-                return;
-            }
-            res.send('Cliente excluído com sucesso');
+          const result = await ClientModel.deleteMany({ _id: { $in: ids } });
+          if (result.deletedCount === 0) {
+            res.status(404).send('Clientes não encontrados');
+            return;
+          }
+          res.send('Clientes excluídos com sucesso');
         } catch (error) {
-            console.error(error);
-            res.status(500).send(error);
+          console.error(error);
+          res.status(500).send(error);
         }
-    },
+      },
 
     async update(req, res) {
         try {
