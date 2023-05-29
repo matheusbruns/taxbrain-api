@@ -51,9 +51,9 @@ module.exports = {
 
     async update(req, res) {
         try {
-            const { id, name, email, telephone, cpf } = req.body;
+            const { _id, name, email, telephone, cpf } = req.body;
 
-            const client = await ClientModel.findByIdAndUpdate(id, {
+            const client = await ClientModel.findByIdAndUpdate(_id, {
                 name: name,
                 email: email,
                 telephone: telephone,
