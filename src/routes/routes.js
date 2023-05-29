@@ -12,7 +12,7 @@ router.route("/login").post(userController.login);
 // Rota clientes
 router.route("/client-new").post(clientController.create);
 router.route("/clients").get(clientController.read);
-router.route("/clients/delete").delete(clientController.delete);
+router.route("/clients/delete").delete(bodyParser.json(), clientController.delete);
 router.route("/clients/update").put(bodyParser.json(), clientController.update);
 
 module.exports = router;
