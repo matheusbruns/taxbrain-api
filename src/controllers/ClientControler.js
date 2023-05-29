@@ -36,25 +36,20 @@ module.exports = {
 
     async delete(req, res) {
         try {
-            const arr = [];
-            const ids = req.query.ids.split(',');
-
-            ids.forEach(element => {
-                arr.push(element);
-            });
-
-            const result = await ClientModel.deleteMany({ _id: { $in: arr } });
-            if (result.deletedCount === 0) {
-                res.status(404).send('Clientes não encontrados');
-                return;
-            }
-            res.send('Clientes excluídos com sucesso');
+          const { ids } = req.body;
+      
+          const result = await ClientModel.deleteMany({ _id: { $in: ids } });
+          if (result.deletedCount === 0) {
+            res.status(404).send('Clientes não encontrados');
+            return;
+          }
+          res.send('Clientes excluídos com sucesso');
         } catch (error) {
-            console.error(error);
-            res.status(500).send(error);
+          console.error(error);
+          res.status(500).send(error);
         }
-    },
-
+      },
+      
     async update(req, res) {
         try {
             const { _id, name, email, telephone, cpf } = req.body;
