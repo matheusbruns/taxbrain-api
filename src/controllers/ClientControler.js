@@ -6,9 +6,9 @@ module.exports = {
 
     async create(req, res) {
         const { name, email, telephone, cpf } = req.body;
-        const userExists = await ClientModel.findOne({ email, cpf });
+        const clientExists = await ClientModel.findOne({ email, cpf });
 
-        if (userExists) {
+        if (clientExists) {
             res.status(400).json("Cliente já existe!");
         }
 
