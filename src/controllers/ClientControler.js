@@ -9,7 +9,7 @@ module.exports = {
         const clientExists = await ClientModel.findOne({ email, cpf });
 
         if (clientExists) {
-            res.status(400).json("Cliente já existe!");
+            return res.status(400).json("Cliente já existe!");
         }
 
         try {
@@ -18,7 +18,7 @@ module.exports = {
                 email,
                 telephone,
                 cpf
-            })
+            });
             res.status(201).json(client);
         } catch (error) {
             res.status(400).json(error);
@@ -36,20 +36,20 @@ module.exports = {
 
     async delete(req, res) {
         try {
-          const { ids } = req.body;
-      
-          const result = await ClientModel.deleteMany({ _id: { $in: ids } });
-          if (result.deletedCount === 0) {
-            res.status(404).send('Clientes não encontrados');
-            return;
-          }
-          res.send('Clientes excluídos com sucesso');
+            const { ids } = req.body;
+
+            const result = await ClientModel.deleteMany({ _id: { $in: ids } });
+            if (result.deletedCount === 0) {
+                res.status(404).send('Clientes não encontrados');
+                return;
+            }
+            res.send('Clientes excluídos com sucesso');
         } catch (error) {
-          console.error(error);
-          res.status(500).send(error);
+            console.error(error);
+            res.status(500).send(error);
         }
-      },
-      
+    },
+
     async update(req, res) {
         try {
             const { _id, name, email, telephone, cpf } = req.body;

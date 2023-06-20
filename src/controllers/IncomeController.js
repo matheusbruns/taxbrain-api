@@ -106,12 +106,14 @@ module.exports = {
 
     async findAll(req, res) {
         try {
-            const incomes = await IncomeModel.find({});
-            res.status(200).json(incomes);
+          const incomes = await IncomeModel.find({})
+            .populate('client', 'name');
+      
+          res.status(200).json(incomes);
         } catch (error) {
-            res.status(400).json(error);
+          res.status(400).json(error);
         }
-    },
+      },
 
     async getIncomesByClientAndPeriod(req, res) {
         const { client, startDate, endDate } = req.body;
