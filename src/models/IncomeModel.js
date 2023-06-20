@@ -31,6 +31,14 @@ const IncomeDataSchema = new mongoose.Schema({
             message: '{VALUE} must be an integer.',
         },
     },
+    monthYear: {
+        type: Number,
+        required: true,
+        validate: {
+            validator: Number.isInteger,
+            message: '{VALUE} must be an integer.',
+        },
+    },
     inssDiscount: {
         type: Number,
     },

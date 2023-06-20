@@ -3,16 +3,16 @@ const ClientModel = require("../models/ClientModel");
 require('dotenv').config();
 
 module.exports = {
+
     async create(req, res) {
         const { fixedIncome, extraIncome, client, month, year } = req.body;
-
         const clientId = await ClientModel.findById(client);
 
         if (!clientId) {
             return res.status(400).json({ error: 'Client not found' });
         }
 
-        function calcularINSS(salario) {
+        function INSSCalculate(salario) {
             if (salario <= 1320) {
                 return salario * 0.075;
             } else if (salario <= 2571.29) {
@@ -26,8 +26,8 @@ module.exports = {
             }
         }
 
-        function calcularRenda(salario) {
-            const inss = calcularINSS(salario);
+        function IncomeCalculate(salario) {
+            const inss = INSSCalculate(salario);
             const rendaLiquida = salario - inss;
 
             return {
@@ -38,62 +38,62 @@ module.exports = {
         }
 
         const salario = fixedIncome; // Valor do salário bruto
-        const resultado = calcularRenda(salario);
+        const resultado = IncomeCalculate(salario);
 
         // console.log("Salário: R$", resultado.salario.toFixed(2));
         // console.log("INSS: R$", resultado.inss.toFixed(2));
         // console.log("Renda Líquida: R$", resultado.rendaLiquida.toFixed(2));
 
-        function IRRF(salario) {
+        function IRRFCalculate(salario) {
 
-            // Fonte: https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/tributos/irpf-imposto-de-renda-pessoa-fisica#tabelas-de-incid-ncia-mensal
             const aliquotas = [0, 0.075, 0.15, 0.225, 0.275];    // aliquotas de IR
             const bases = [2112.00, 2826.65, 3751.06, 4664.68, Infinity]; // bases de calculo
-        
+
             // calcula tamanho das faixas de tributacao conforme salario
             const faixas = bases.map(function (b, i, arr) {
-        
-              // a faixa atual eh no maximo o valor da base de calculo
-              var faixa = Math.min(salario, b)
-        
-              // se a base nao for a primeira, precisamos subtrair o valor da base anterior
-              if (i !== 0) {
-                faixa -= arr[i - 1];
-              }
-        
-              // bases maiores que salario podem resultar em faixas negativas, por isso zeramos essas
-              faixa = Math.max(faixa, 0);
-        
-              return faixa;
-        
+
+                // a faixa atual eh no maximo o valor da base de calculo
+                var faixa = Math.min(salario, b)
+
+                // se a base nao for a primeira, precisamos subtrair o valor da base anterior
+                if (i !== 0) {
+                    faixa -= arr[i - 1];
+                }
+
+                // bases maiores que salario podem resultar em faixas negativas, por isso zeramos essas
+                faixa = Math.max(faixa, 0);
+
+                return faixa;
             });
-        
+
             // calcula imposto conforme a aliquota de cada faixa e soma ao valor total
             const imposto = faixas.reduce(function (sum, f, i) {
-              // calcula imposto da faixa multiplicando sua aliquota
-              const impFaixa = (f * aliquotas[i]);
-              return sum += impFaixa;
+                // calcula imposto da faixa multiplicando sua aliquota
+                const impFaixa = (f * aliquotas[i]);
+                return sum += impFaixa;
             }, 0);
-        
+
             // imposto a pagar sobre rendimentos
             return imposto;
-        
-          }
+        }
 
         try {
             const inssDiscount = parseFloat(resultado.inss.toFixed(2));
-            const irDiscount = parseFloat(IRRF(resultado.rendaLiquida.toFixed(2)));
+            const irDiscount = parseFloat(IRRFCalculate(resultado.rendaLiquida.toFixed(2) + extraIncome));
             const netIncome = fixedIncome - (inssDiscount + irDiscount);
-           
+            const totalDiscount = inssDiscount + irDiscount;
+            const monthYear = year * 100 + month;
+
             const income = await IncomeModel.create({
                 fixedIncome,
                 extraIncome,
                 client,
                 month,
                 year,
+                monthYear: monthYear,
                 inssDiscount: inssDiscount,
                 irDiscount: irDiscount,
-                totalDiscount: inssDiscount + irDiscount,
+                totalDiscount: totalDiscount,
                 netIncome: netIncome,
             });
 
@@ -103,22 +103,32 @@ module.exports = {
         }
     },
 
-    async read(req, res) {
+    async findAll(req, res) {
         try {
-            const clients = await IncomeModel.find({});
-            res.status(200).json(clients);
+            const incomes = await IncomeModel.find({});
+            res.status(200).json(incomes);
         } catch (error) {
             res.status(400).json(error);
         }
     },
 
     async getIncomesByClientAndPeriod(req, res) {
+        const { client, startDate, endDate } = req.body;
+        const clientId = await ClientModel.findById(client);
 
-        const { } = req.params;
-
+        if (!clientId) {
+            return res.status(400).json({ error: 'Client not found' });
+        }
         try {
-            const clients = await IncomeModel.find({});
-            res.status(200).json(clients);
+            const incomes = await IncomeModel.find({
+                client: clientId,
+                $and: [
+                    { monthYear: { $gte: parseInt(startDate) } },
+                    { monthYear: { $lte: parseInt(endDate) } }
+                ]
+            });
+
+            res.status(200).json(incomes);
         } catch (error) {
             res.status(400).json(error);
         }
