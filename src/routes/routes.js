@@ -19,7 +19,7 @@ router.route("/clients/update").put(bodyParser.json(), clientController.update);
 
 // Rota Renda
 router.route("/income").post(bodyParser.json(), incomeController.create)
-router.route("/income").get(bodyParser.json(), incomeController.getIncomesByClientAndPeriod)
+router.route("/income/filter").get(bodyParser.json(), incomeController.getIncomesByClientAndPeriod)
 router.route("/income/find-all").get(incomeController.findAll)
 router.route("/income/delete").delete(incomeController.delete)
 
