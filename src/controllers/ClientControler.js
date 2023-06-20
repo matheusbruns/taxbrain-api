@@ -1,6 +1,7 @@
 const ClientModel = require('../models/ClientModel');
-require('dotenv').config();
+const IncomeModel = require("../models/IncomeModel");
 
+require('dotenv').config();
 
 module.exports = {
 
@@ -39,6 +40,9 @@ module.exports = {
             const { ids } = req.body;
 
             const result = await ClientModel.deleteMany({ _id: { $in: ids } });
+
+            const resultIncome = await IncomeModel.deleteMany({ client: { $in: ids } });
+
             if (result.deletedCount === 0) {
                 res.status(404).send('Clientes não encontrados');
                 return;

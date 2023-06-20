@@ -106,14 +106,29 @@ module.exports = {
 
     async findAll(req, res) {
         try {
-          const incomes = await IncomeModel.find({})
-            .populate('client', 'name');
-      
-          res.status(200).json(incomes);
+            const incomes = await IncomeModel.find({}).populate('client', 'name');
+
+            const response = incomes.map(income => {
+                let name = income.client.name;
+                return {
+                    id: income._id,
+                    clientName: name,
+                    fixedIncome: income.fixedIncome,
+                    extraIncome: income.extraIncome,
+                    month: income.month,
+                    year: income.year,
+                    inssDiscount: income.inssDiscount,
+                    irDiscount: income.irDiscount,
+                    totalDiscount: income.totalDiscount,
+                    netIncome: income.netIncome,
+                };
+            });
+
+            res.status(200).json(response);
         } catch (error) {
-          res.status(400).json(error);
+            res.status(400).json(error);
         }
-      },
+    },
 
     async getIncomesByClientAndPeriod(req, res) {
         const { client, startDate, endDate } = req.body;
@@ -149,6 +164,6 @@ module.exports = {
         } catch (error) {
             res.status(500).send(error);
         }
-    }
+    },
 
 };
