@@ -9,7 +9,7 @@ module.exports = {
         const clientId = await ClientModel.findById(client);
 
         if (!clientId) {
-            return res.status(400).json({ error: 'Client not found' });
+            return res.status(400).json({ error: 'Cliente não encontrado!' });
         }
 
         function INSSCalculate(salario) {
@@ -101,6 +101,7 @@ module.exports = {
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
+
     },
 
     async findAll(req, res) {
@@ -117,7 +118,7 @@ module.exports = {
         const clientId = await ClientModel.findById(client);
 
         if (!clientId) {
-            return res.status(400).json({ error: 'Client not found' });
+            return res.status(400).json({ error: 'Cliente não encontrado!' });
         }
         try {
             const incomes = await IncomeModel.find({
@@ -133,5 +134,19 @@ module.exports = {
             res.status(400).json(error);
         }
     },
+
+    async delete(req, res) {
+        const { ids } = req.body;
+        try {
+            const result = await IncomeModel.deleteMany({ _id: { $in: ids } });
+            if (result.deletedCount === 0) {
+                res.status(404).send('Renda não encontrada');
+                return;
+            }
+            res.send('Valores excluídos com sucesso');
+        } catch (error) {
+            res.status(500).send(error);
+        }
+    }
 
 };

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
+const validateTokenJWT = require('../utils/validateToken');
 
 const userController = require('../controllers/userControler');
 const clientController = require('../controllers/ClientControler');
@@ -20,6 +21,7 @@ router.route("/clients/update").put(bodyParser.json(), clientController.update);
 router.route("/income").post(bodyParser.json(), incomeController.create)
 router.route("/income").get(bodyParser.json(), incomeController.getIncomesByClientAndPeriod)
 router.route("/income/find-all").get(incomeController.findAll)
+router.route("/income/delete").delete(incomeController.delete)
 
 
 module.exports = router;
