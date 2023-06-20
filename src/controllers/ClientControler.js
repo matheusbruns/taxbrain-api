@@ -1,15 +1,16 @@
 const ClientModel = require('../models/ClientModel');
-require('dotenv').config();
+const IncomeModel = require("../models/IncomeModel");
 
+require('dotenv').config();
 
 module.exports = {
 
     async create(req, res) {
         const { name, email, telephone, cpf } = req.body;
-        const userExists = await ClientModel.findOne({ email, cpf });
+        const clientExists = await ClientModel.findOne({ email, cpf });
 
-        if (userExists) {
-            res.status(400).json("Cliente já existe!");
+        if (clientExists) {
+            return res.status(400).json("Cliente já existe!");
         }
 
         try {
@@ -18,7 +19,7 @@ module.exports = {
                 email,
                 telephone,
                 cpf
-            })
+            });
             res.status(201).json(client);
         } catch (error) {
             res.status(400).json(error);
@@ -35,17 +36,42 @@ module.exports = {
     },
 
     async delete(req, res) {
-        const _id = req.params._id;
         try {
-          const result = await ClientModel.deleteOne({ _id });
-          if (result.deletedCount === 0) {
-            res.status(404).send('Cliente não encontrado');
-            return;
-          }
-          res.send('Cliente excluído com sucesso');
+            const { ids } = req.body;
+
+            const result = await ClientModel.deleteMany({ _id: { $in: ids } });
+
+            const resultIncome = await IncomeModel.deleteMany({ client: { $in: ids } });
+
+            if (result.deletedCount === 0) {
+                res.status(404).send('Clientes não encontrados');
+                return;
+            }
+            res.send('Clientes excluídos com sucesso');
         } catch (error) {
-          console.error(error);
-          res.status(500).send(error);
+            console.error(error);
+            res.status(500).send(error);
         }
-      }
+    },
+
+    async update(req, res) {
+        try {
+            const { _id, name, email, telephone, cpf } = req.body;
+
+            const client = await ClientModel.findByIdAndUpdate(_id, {
+                name: name,
+                email: email,
+                telephone: telephone,
+                cpf: cpf
+            });
+
+            if (!client) {
+                return res.status(404).send('Client not found');
+            }
+            res.send('success updated');
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error);
+        }
+    }
 }

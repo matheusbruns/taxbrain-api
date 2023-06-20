@@ -6,6 +6,7 @@ const fileUpload = require('express-fileupload');
 const fs = require('fs');
 const cors = require('cors');
 const routes = require('./routes/routes');
+const bodyParser = require('body-parser');
 
 var path = require('path');
 
@@ -13,6 +14,7 @@ const PORT = process.env.PORT; // Define a porta na qual o servidor deve escutar
 
 app.use(express.json());
 app.use(cors());
+app.use(bodyParser.json());
 
 app.use("/api", routes);
 
