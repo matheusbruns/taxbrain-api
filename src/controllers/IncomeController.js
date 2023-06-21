@@ -111,7 +111,7 @@ module.exports = {
             const response = incomes.map(income => {
                 let name = income.client.name;
                 return {
-                    id: income._id,
+                    _id: income._id,
                     clientName: name,
                     fixedIncome: income.fixedIncome,
                     extraIncome: income.extraIncome,
@@ -144,9 +144,26 @@ module.exports = {
                     { monthYear: { $gte: parseInt(startDate) } },
                     { monthYear: { $lte: parseInt(endDate) } }
                 ]
+            }).populate('client', 'name');
+
+            const response = incomes.map(income => {
+                let name = income.client.name;
+                return {
+                    _id: income._id,
+                    clientName: name,
+                    fixedIncome: income.fixedIncome,
+                    extraIncome: income.extraIncome,
+                    month: income.month,
+                    year: income.year,
+                    inssDiscount: income.inssDiscount,
+                    irDiscount: income.irDiscount,
+                    totalDiscount: income.totalDiscount,
+                    netIncome: income.netIncome,
+                };
             });
 
-            res.status(200).json(incomes);
+
+            res.status(200).json(response);
         } catch (error) {
             res.status(400).json(error);
         }
