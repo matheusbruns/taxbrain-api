@@ -24,6 +24,7 @@ module.exports = {
             res.status(400).json(error);
         }
     },
+
     async login(req, res) {
         const { email, password } = req.body;
 
@@ -36,7 +37,7 @@ module.exports = {
         }
 
         const user = await UserModel.findOne({ email: email });
-
+        console.log(user)
         if (!user) {
             return res.status(404).json("Usuário não existe!");;
         }
@@ -60,6 +61,43 @@ module.exports = {
             res.status(400).json({ msg: "Erro ao realizar autenticação." });
         }
 
+    },
+
+    async findUser(req, res) {
+        const { id } = req.query;
+        try {
+            const user = await UserModel.findById(id);
+            const response = {
+                _id: user._id,
+                name: user.name,
+                email: user.email
+            }
+
+            res.status(200).json(response);
+        } catch (error) {
+            res.status(400).json(error);
+        }
+    },
+
+    async update(req, res) {
+        const { id, name, password } = req.body;
+
+        try {
+            const user = await UserModel.findById(id);
+
+            if (!user) {
+                return res.status(404).json("Usuário não encontrado!");
+            }
+
+            user.name = name;
+            user.password = password;
+
+            const updatedUser = await user.save();
+
+            res.status(200).json(updatedUser);
+        } catch (error) {
+            res.status(400).json(error);
+        }
     }
 
 }
