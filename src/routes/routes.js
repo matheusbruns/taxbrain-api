@@ -10,6 +10,8 @@ const incomeController = require('../controllers/IncomeController');
 // Rota usuários
 router.route("/users").post(userController.create);
 router.route("/login").post(userController.login);
+router.route("/user-location").get(userController.findUser);
+router.route("/user-update").put(bodyParser.json(), userController.update);
 
 // Rota clientes
 router.route("/client-new").post(clientController.create);
