@@ -111,7 +111,7 @@ module.exports = {
             const response = incomes.map(income => {
                 let name = income.client.name;
                 return {
-                    id: income._id,
+                    _id: income._id,
                     clientName: name,
                     fixedIncome: income.fixedIncome,
                     extraIncome: income.extraIncome,
