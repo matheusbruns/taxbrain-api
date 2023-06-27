@@ -1,0 +1,15 @@
+{
+    "name": "back",
+    "version": 2,
+    "public": true,
+    "build": {
+        "src": "src/index.js",
+        "use": "@vercel/node"
+    },
+    "routes": [
+        {
+            "src": "src/routes/routes.js",
+            "dest": "api/index.js"
+        }
+    ]
+}
