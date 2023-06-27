@@ -56,7 +56,7 @@ module.exports = {
                 secret,
             );
 
-            res.status(200).json({ msg: "Autenticação realizada com sucesso!", token, _id: user._id, signed: true});
+            res.status(200).json({ msg: "Autenticação realizada com sucesso!", token, _id: user._id, name: user.name});
         } catch (error) {
             res.status(400).json({ msg: "Erro ao realizar autenticação." });
         }
