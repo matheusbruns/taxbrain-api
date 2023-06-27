@@ -56,7 +56,7 @@ module.exports = {
                 secret,
             );
 
-            res.status(200).json({ msg: "Autenticação realizada com sucesso!", token });
+            res.status(200).json({ msg: "Autenticação realizada com sucesso!", token, _id: user._id, name: user.name});
         } catch (error) {
             res.status(400).json({ msg: "Erro ao realizar autenticação." });
         }
@@ -70,7 +70,8 @@ module.exports = {
             const response = {
                 _id: user._id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                password: user.password
             }
 
             res.status(200).json(response);
@@ -80,25 +81,35 @@ module.exports = {
     },
 
     async update(req, res) {
-        const { id, name, password } = req.body;
-
+        const { id, name, email, password } = req.body;
+    
         try {
             const user = await UserModel.findById(id);
-
+    
             if (!user) {
                 return res.status(404).json("Usuário não encontrado!");
             }
-
-            user.name = name;
-            user.password = password;
-
+    
+            if (name) {
+                user.name = name;
+            }
+    
+            if (email) {
+                user.email = email;
+            }
+    
+            if (password) {
+                user.password = password;
+            }
+    
             const updatedUser = await user.save();
-
+    
             res.status(200).json(updatedUser);
         } catch (error) {
             res.status(400).json(error);
         }
     }
+    
 
 }
 
