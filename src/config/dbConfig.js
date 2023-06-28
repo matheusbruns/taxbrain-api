@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-const dbConfig = "mongodb+srv://matheusrbruns:8bZbuskWrfBph7cE@cluster0.rhskry5.mongodb.net/taxbrain?retryWrites=true&w=majority";
+const { DATABASE_URL } = process.env;
 
-const connection = mongoose.connect(dbConfig, {
+const connection = mongoose.connect(DATABASE_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });

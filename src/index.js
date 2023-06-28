@@ -1,5 +1,6 @@
 const express = require('express'); // Importa o módulo do Express
 const app = express(); // Cria uma instância do Express
+require('dotenv').config();
 const database = require('./config/dbConfig');
 const session = require('express-session');
 const fileUpload = require('express-fileupload');
